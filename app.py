@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 app = Flask(__name__)
 
 # --- Configuration ---
-app.config['SECRET_KEY'] = 'da2a6a0b4346309177dfbfd7af7cacb8772ac9e50c683036' # !!! IMPORTANT: Change this !!!
+app.config['SECRET_KEY'] = "Secret key' # !!! IMPORTANT: Change this !!!
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///quiz_app.db' # SQLite database file
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # Disable tracking modifications for performance
 
