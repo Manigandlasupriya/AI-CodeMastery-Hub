@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Result - CodeMaster Quiz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #2c3e50; /* Dark blue-grey background */
+            color: #ecf0f1; /* Light text color */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background-color: #34495e !important; /* Slightly darker navbar */
+        }
+        .container {
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            color: #ecf0f1;
+        }
+        .result-container {
+            background-color: #3e526a; /* Darker card background */
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .score-display {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2ecc71; /* Green for score */
+            margin-bottom: 20px;
+        }
+        .score-display.fail {
+            color: #e74c3c; /* Red for low score */
+        }
+        .summary p {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #bdc3c7;
+        }
+        .wrong-answers-section {
+            margin-top: 30px;
+            border-top: 1px solid #4a607a;
+            padding-top: 20px;
+        }
+        .wrong-answer-detail {
+            border-left: 5px solid #e74c3c; /* Red border for wrong answers */
+            padding-left: 15px;
+            margin-top: 20px;
+            background-color: #2c3e50; /* Even darker background for detail */
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .wrong-answer-detail p {
+            margin-bottom: 8px;
+            color: #bdc3c7;
+        }
+        .correct-info {
+            color: #2ecc71; /* Green for correct answer */
+            font-weight: bold;
+        }
+        .user-info {
+            color: #f39c12; /* Orange for user answer (if wrong) */
+            font-weight: bold;
+        }
+        .suggestions-section {
+            margin-top: 30px;
+            border-top: 1px solid #4a607a;
+            padding-top: 20px;
+        }
+        .suggestions-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .suggestions-section ul li {
+            background-color: #2c3e50;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            color: #bdc3c7;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .btn-back-dashboard {
+            background-image: linear-gradient(to right, #8e44ad, #2980b9);
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            margin-top: 30px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .btn-back-dashboard:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            background-image: linear-gradient(to right, #9b59b6, #3498db);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('dashboard') }}">CodeMaster Quiz</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('videos') }}">Learning Videos</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="navbar-text me-3">
+                            Good Afternoon, {{ current_user.username }}!
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Quiz Result - {{ attempt.quiz_language|capitalize }}</h1>
+
+        <div class="result-container text-center">
+            <p class="score-display {% if attempt.score < 50 %}fail{% endif %}">
+                {{ "%.2f"|format(attempt.score) }}%
+            </p>
+            <div class="summary">
+                <p>Correct Answers: <strong>{{ attempt.correct_answers }}</strong> / <strong>{{ attempt.total_questions }}</strong></p>
+                <p>Time Taken: <strong>
+                    {% if attempt.time_taken_seconds %}
+                        {{ "%02d:%02d"|format(attempt.time_taken_seconds // 60, attempt.time_taken_seconds % 60) }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </strong></p>
+                <p>Date Attempted: <strong>{{ attempt.date_attempted.strftime('%Y-%m-%d %H:%M') }}</strong></p>
+            </div>
+
+            <div class="suggestions-section">
+                <h4>AI Suggestions:</h4>
+                {% if suggestions %}
+                    <ul>
+                        {% for suggestion in suggestions %}
+                            <li>{{ suggestion }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No specific suggestions at this time.</p>
+                {% endif %}
+            </div>
+
+            <div class="wrong-answers-section">
+                <h4>Explanation for Wrong Answers:</h4>
+                {% if wrong_answers %}
+                    {% for detail in wrong_answers %}
+                        <div class="wrong-answer-detail">
+                            <p><strong>Question:</strong> {{ detail.question }}</p>
+                            <p class="user-info"><strong>Your Answer:</strong> {{ detail.user_answer or 'No answer selected' }}</p>
+                            <p class="correct-info"><strong>Correct Answer:</strong> {{ detail.correct_answer }}</p>
+                            <p><strong>Explanation:</strong> {{ detail.explanation }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Great job! No wrong answers to explain.</p>
+                {% endif %}
+            </div>
+
+            <a href="{{ url_for('dashboard') }}" class="btn btn-back-dashboard">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

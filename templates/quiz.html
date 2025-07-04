@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeMaster Quiz - {{ quiz_language|capitalize }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #2c3e50; /* Dark blue-grey background */
+            color: #ecf0f1; /* Light text color */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background-color: #34495e !important; /* Slightly darker navbar */
+        }
+        .quiz-container {
+            background-color: #3e526a; /* Darker card background */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow */
+            max-width: 800px;
+            margin: 50px auto;
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+        }
+        h1, h3 {
+            color: #ecf0f1;
+            font-weight: 600;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .mb-4 {
+            margin-bottom: 1.5rem !important;
+        }
+        .question-block {
+            background-color: #2c3e50; /* Even darker background for question block */
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08); /* Subtle border */
+        }
+        .question-block h5 {
+            color: #ecf0f1;
+            margin-bottom: 20px;
+            font-size: 1.25em;
+        }
+        .options .form-check {
+            margin-bottom: 12px;
+        }
+        .options .form-check-input[type="radio"] {
+            width: 1.2em; /* Larger radio button */
+            height: 1.2em;
+            margin-top: 0.2em; /* Align with text */
+            margin-right: 0.8em; /* Space between radio and label */
+            border-color: #95a5a6; /* Muted border color */
+            background-color: #3e526a; /* Darker background for unchecked radio */
+        }
+        .options .form-check-input[type="radio"]:checked {
+            background-color: #2980b9; /* Blue checked state */
+            border-color: #2980b9;
+        }
+        .options .form-check-label {
+            color: #bdc3c7; /* Muted text color for options */
+            cursor: pointer;
+            font-size: 1.05em;
+            padding-left: 0.25em; /* Adjust label spacing if needed */
+        }
+        .options .form-check-label:hover {
+            color: #ecf0f1; /* Lighter on hover */
+        }
+
+        .wrong-answer-detail {
+            border-left: 5px solid #e74c3c; /* Red border for wrong answers */
+            padding-left: 15px;
+            margin-top: 20px;
+            background-color: #3e526a; /* Consistent dark background */
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .wrong-answer-detail p {
+            margin-bottom: 8px;
+            color: #bdc3c7;
+        }
+        .correct-info {
+            color: #2ecc71; /* Green for correct answer */
+            font-weight: bold;
+        }
+        .user-info {
+            color: #f39c12; /* Orange for user answer (if wrong) */
+            font-weight: bold;
+        }
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        /* Custom Button Styles (consistent with dashboard) */
+        .btn-custom {
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            color: white; /* Ensure text color remains white on hover */
+        }
+
+        .btn-previous {
+            background-color: #6c757d; /* Standard grey for secondary actions */
+            border-color: #6c757d;
+        }
+        .btn-previous:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+        .btn-next {
+            background-image: linear-gradient(to right, #8e44ad, #2980b9); /* Purple to Blue gradient */
+        }
+        .btn-next:hover {
+            background-image: linear-gradient(to right, #9b59b6, #3498db); /* Slightly lighter gradient on hover */
+        }
+
+        .btn-submit-quiz {
+            background-image: linear-gradient(to right, #27ae60, #2ecc71); /* Green gradient for submit */
+        }
+        .btn-submit-quiz:hover {
+            background-image: linear-gradient(to right, #2ecc71, #27ae60);
+        }
+
+        /* Results section styling */
+        #results {
+            background-color: #3e526a;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        #results h3, #results h4 {
+            color: #ecf0f1;
+            margin-bottom: 15px;
+        }
+        #results p {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #bdc3c7;
+        }
+        #results ul {
+            list-style: none; /* Remove default bullet points */
+            padding-left: 0;
+        }
+        #results ul li {
+            background-color: #2c3e50;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            color: #bdc3c7;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Progress indicator */
+        .progress-indicator {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            color: #bdc3c7;
+        }
+        .progress-indicator strong {
+            color: #ecf0f1;
+        }
+
+        /* Navbar text and logout button */
+        .navbar-text {
+            color: #bdc3c7 !important;
+        }
+        .navbar-nav .btn-outline-light {
+            border-color: #bdc3c7;
+            color: #bdc3c7;
+        }
+        .navbar-nav .btn-outline-light:hover {
+            background-color: #bdc3c7;
+            color: #34495e;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('dashboard') }}">AI CodeMastery Hub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('videos') }}">Learning Videos</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="navbar-text me-3">
+                            Hello, {{ current_user.username }}!
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container quiz-container">
+        <h1 class="text-center mb-4">{{ quiz_language|capitalize }} Quiz</h1>
+
+        <div class="text-center mb-4">
+            <h3 id="timer">Time Left: <span id="time">05:00</span></h3>
+        </div>
+
+        <div class="progress-indicator">
+            Question <span id="currentQuestionNumber">1</span> of <span id="totalQuizQuestions">{{ questions|length }}</span>
+        </div>
+
+        <form id="quizForm">
+            {% for q in questions %}
+            {% set question_index = loop.index0 %}
+            <div class="question-block question-page" id="question-page-{{ question_index }}" {% if not loop.first %}style="display: none;"{% endif %}>
+                <h5>{{ question_index + 1 }}. {{ q.question }}</h5>
+                <div class="options">
+                    {% for option in q.options %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt{{ loop.index0 }}" value="{{ option }}">
+                        <label class="form-check-label" for="q{{ q.id }}_opt{{ loop.index0 }}">
+                            {{ option }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="navigation-buttons">
+                <button type="button" class="btn btn-custom btn-previous" id="prevButton" style="display: none;">Previous</button>
+                <button type="button" class="btn btn-custom btn-next" id="nextButton">Next</button>
+                <button type="button" class="btn btn-custom btn-submit-quiz" id="submitQuizButton" style="display: none;">Submit Quiz</button>
+            </div>
+        </form>
+
+        <div id="results" class="mt-4" style="display:none;">
+            <h3>Quiz Results</h3>
+            <p>Your Score: <span id="score"></span>%</p>
+            <p>Correct Answers: <span id="correctCount"></span> / <span id="totalQuestions"></span></p>
+
+            <h4 class="mt-4">AI Suggestions:</h4>
+            <ul id="suggestionsList"></ul>
+
+            <h4 class="mt-4">Explanation for Wrong Answers:</h4>
+            <div id="wrongAnswersExplanation">
+            </div>
+
+            <a href="{{ url_for('dashboard') }}" class="btn btn-custom btn-previous mt-3">Back to Dashboard</a>
+        </div>
+    </div>
+
+    {# FIX: Store questions data in a script tag with type="application/json" #}
+    <script id="quiz-questions-data" type="application/json">
+        {{ questions | tojson }}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let timeRemaining = 300; // 5 minutes in seconds
+        let timerInterval;
+        const quizForm = document.getElementById('quizForm');
+        const resultsDiv = document.getElementById('results');
+        const scoreSpan = document.getElementById('score');
+        const correctCountSpan = document.getElementById('correctCount');
+        const totalQuestionsSpan = document.getElementById('totalQuestions');
+        const suggestionsList = document.getElementById('suggestionsList');
+        const wrongAnswersExplanationDiv = document.getElementById('wrongAnswersExplanation');
+
+        let currentQuestionIndex = 0;
+        const questionPages = document.querySelectorAll('.question-page');
+        const prevButton = document.getElementById('prevButton');
+        const nextButton = document.getElementById('nextButton');
+        const submitQuizButton = document.getElementById('submitQuizButton');
+
+        // Progress Indicator elements
+        const currentQuestionNumberSpan = document.getElementById('currentQuestionNumber');
+        const totalQuizQuestionsSpan = document.getElementById('totalQuizQuestions');
+
+        // FIX: Retrieve and parse questionsData from the script tag
+        let questionsData = [];
+        try {
+            const dataScript = document.getElementById('quiz-questions-data');
+            if (dataScript && dataScript.textContent) {
+                questionsData = JSON.parse(dataScript.textContent);
+                console.log("questionsData parsed successfully from script tag:", questionsData);
+                if (!Array.isArray(questionsData)) {
+                    console.error("questionsData is not an array after parsing:", questionsData);
+                    questionsData = []; // Reset if not an array
+                }
+            } else {
+                console.warn("quiz-questions-data script tag not found or empty.");
+            }
+        } catch (e) {
+            console.error("Error parsing questionsData from script tag:", e);
+            questionsData = []; // Ensure it's an empty array on error
+        }
+
+
+        function updateProgressIndicator() {
+            currentQuestionNumberSpan.textContent = currentQuestionIndex + 1;
+        }
+
+        function showQuestion(index) {
+            console.log("Attempting to show question index:", index);
+            if (questionPages.length === 0) {
+                console.warn("No question pages found. Cannot show question.");
+                return;
+            }
+            if (index < 0 || index >= questionPages.length) {
+                console.warn("Invalid question index:", index, "Total pages:", questionPages.length);
+                return;
+            }
+
+            questionPages.forEach((page, i) => {
+                page.style.display = (i === index) ? 'block' : 'none';
+            });
+            currentQuestionIndex = index; // Update current index
+            updateProgressIndicator(); // Update indicator
+
+            // Update button visibility
+            prevButton.style.display = (index === 0) ? 'none' : 'inline-block';
+            if (index === questionPages.length - 1) {
+                nextButton.style.display = 'none';
+                submitQuizButton.style.display = 'inline-block';
+            } else {
+                nextButton.style.display = 'inline-block';
+                submitQuizButton.style.display = 'none';
+            }
+            console.log("Question displayed:", index + 1);
+        }
+
+        function nextQuestion() {
+            console.log("Next button clicked. Current index:", currentQuestionIndex);
+            if (currentQuestionIndex < questionPages.length - 1) {
+                currentQuestionIndex++;
+                showQuestion(currentQuestionIndex);
+            } else {
+                console.log("Already on the last question.");
+            }
+        }
+
+        function prevQuestion() {
+            console.log("Previous button clicked. Current index:", currentQuestionIndex);
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion(currentQuestionIndex);
+            } else {
+                console.log("Already on the first question.");
+            }
+        }
+
+        function startTimer() {
+            console.log("Timer starting.");
+            timerInterval = setInterval(() => {
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                document.getElementById('time').textContent =
+                    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    const message = "Time's up! Submitting your quiz.";
+                    console.log(message);
+                    submitQuiz();
+                }
+                timeRemaining--;
+            }, 1000);
+        }
+
+        async function submitQuiz() {
+            console.log("Submit quiz called!");
+            clearInterval(timerInterval);
+
+            const userAnswers = {};
+            const totalQuestionsInQuiz = questionsData.length;
+            
+            for (let i = 0; i < totalQuestionsInQuiz; i++) {
+                const questionId = questionsData[i].id;
+                const radios = document.querySelectorAll(`input[name="question_${questionId}"]`);
+                let selectedValue = null;
+                for (const radio of radios) {
+                    if (radio.checked) {
+                        selectedValue = radio.value;
+                        break;
+                    }
+                }
+                if (selectedValue !== null) {
+                    userAnswers[questionId] = selectedValue;
+                } else {
+                    userAnswers[questionId] = '';
+                }
+            }
+
+            userAnswers['time_taken'] = 300 - (timeRemaining + 1);
+
+            try {
+                const response = await fetch('/submit_quiz/' + "{{ quiz_language }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userAnswers)
+                });
+                const data = await response.json();
+
+                if (data.error) {
+                    const message = `Error: ${data.error}`;
+                    console.error(message);
+                    return;
+                }
+
+                let scoreValue = data.score;
+                if (typeof scoreValue === 'string') {
+                    scoreValue = parseFloat(scoreValue);
+                }
+                if (isNaN(scoreValue) || scoreValue === null || typeof scoreValue === 'undefined') {
+                    scoreValue = 0;
+                    console.warn("Score received from backend was not a valid number, defaulting to 0. Raw score:", data.score);
+                }
+                scoreSpan.textContent = scoreValue.toFixed(2);
+
+                correctCountSpan.textContent = data.correct_answers;
+                totalQuestionsSpan.textContent = data.total_questions;
+
+                suggestionsList.innerHTML = '';
+                if (data.suggestions && data.suggestions.length > 0) {
+                    data.suggestions.forEach(suggestion => {
+                        const li = document.createElement('li');
+                        li.textContent = suggestion;
+                        suggestionsList.appendChild(li);
+                    });
+                } else {
+                    suggestionsList.innerHTML = '<li>No specific suggestions at this time. Keep learning!</li>';
+                }
+
+                wrongAnswersExplanationDiv.innerHTML = '';
+                if (data.wrong_answers_details && data.wrong_answers_details.length > 0) {
+                    data.wrong_answers_details.forEach(detail => {
+                        const div = document.createElement('div');
+                        div.className = 'wrong-answer-detail mb-3';
+                        div.innerHTML = `
+                            <p><strong>Question:</strong> ${detail.question}</p>
+                            <p class="user-info"><strong>Your Answer:</strong> ${detail.user_answer || 'No answer selected'}</p>
+                            <p class="correct-info"><strong>Correct Answer:</strong> ${detail.correct_answer}</p>
+                            <p><strong>Explanation:</strong> ${detail.explanation}</p>
+                        `;
+                        wrongAnswersExplanationDiv.appendChild(div);
+                    });
+                } else {
+                    wrongAnswersExplanationDiv.innerHTML = '<p>Great job! No wrong answers to explain.</p>';
+                }
+
+                quizForm.style.display = 'none';
+                resultsDiv.style.display = 'block';
+
+            } catch (error) {
+                console.error('Error submitting quiz:', error);
+                const message = 'An error occurred while submitting the quiz. Please try again.';
+                console.error(message);
+            }
+        }
+
+        // Event Listeners for navigation and submission
+        prevButton.addEventListener('click', prevQuestion);
+        nextButton.addEventListener('click', nextQuestion);
+        submitQuizButton.addEventListener('click', submitQuiz);
+
+        quizForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+        });
+
+        // Initialize the quiz display on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (questionPages.length > 0) {
+                showQuestion(currentQuestionIndex);
+                startTimer();
+            }
+        });
+    </script>
+</body>
+</html>

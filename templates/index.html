@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI CodeMastery Hub</title>
+    <!-- Tailwind CSS CDN for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter for a clean, modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS for Inter font and general body styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* More dynamic background with a subtle overlay pattern */
+            background: linear-gradient(to right bottom, #6a0572, #8e2de2);
+            position: relative; /* Needed for pseudo-elements */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem; /* Increased padding */
+            /* Removed overflow: hidden; to enable scrolling */
+        }
+
+        /* Adding a subtle background pattern */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zm1 5v1H5zM6 0H5L0 5V6z'/%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.8; /* Make it subtle */
+            z-index: 0;
+        }
+
+        /* Keyframe animation for initial container entrance */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .container {
+            animation: fadeInScale 0.8s ease-out forwards; /* Apply animation */
+            position: relative; /* Ensure it's above the background pattern */
+            z-index: 1;
+        }
+
+        /* Reusable Button Style with more distinct hover */
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.85rem 2.25rem; /* Slightly larger padding */
+            border-radius: 9999px;
+            font-weight: 700; /* Bolder text */
+            color: white;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother transition */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* More pronounced shadow */
+            text-decoration: none;
+            min-width: 160px; /* Slightly wider buttons */
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent; /* Add a transparent border for hover effect */
+        }
+        .button:hover {
+            transform: translateY(-3px); /* More lift effect */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+            border-color: rgba(255, 255, 255, 0.5); /* White border on hover */
+        }
+        .button:focus {
+            outline: none;
+            box-shadow: 0 0 0 5px rgba(66, 153, 225, 0.6); /* More visible focus ring */
+        }
+
+        /* Adding a subtle glow effect to the main title */
+        .title-glow {
+            text-shadow: 0 0 8px rgba(139, 92, 246, 0.6), 0 0 15px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Animated background for the info section */
+        .info-section {
+            background: linear-gradient(135deg, #f9fafb, #edf2f7); /* Lighter, subtle gradient */
+            background-size: 200% 200%;
+            animation: gradientShift 10s ease infinite; /* Subtle background animation */
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Chatbot specific styles */
+        .chatbot-container {
+            display: flex;
+            flex-direction: column;
+            height: 400px; /* Fixed height for chat window */
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            background-color: #f8fafc;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 0.6rem 1rem;
+            border-radius: 1.2rem;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: #8e2de2; /* Purple */
+            color: white;
+            border-bottom-right-radius: 0.2rem;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background-color: #e2e8f0; /* Light gray */
+            color: #2d3748; /* Dark gray text */
+            border-bottom-left-radius: 0.2rem;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 1rem;
+            border-top: 1px solid #e2e8f0;
+            background-color: #ffffff;
+        }
+
+        .chat-input-area input {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 9999px; /* Fully rounded */
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .chat-input-area input:focus {
+            border-color: #8e2de2;
+        }
+
+        .chat-input-area button {
+            margin-left: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            background-color: #6a0572; /* Darker purple */
+            color: white;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .chat-input-area button:hover {
+            background-color: #8e2de2;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container bg-white bg-opacity-95 rounded-3xl shadow-2xl p-8 md:p-12 max-w-4xl w-full text-center border border-gray-200 backdrop-blur-sm">
+        <!-- Main Heading Section -->
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight title-glow">
+            Welcome to <span class="text-purple-700">AI CodeMastery Hub!</span>
+        </h1>
+        <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            Sharpen your coding skills and test your knowledge across various programming languages and web technologies.
+        </p>
+
+        <!-- Authentication Links Section -->
+        <div class="auth-links mb-10 flex flex-col sm:flex-row justify-center gap-4">
+            <!-- Example for authenticated user (uncomment to see this state) -->
+            <!--
+            <div class="flex flex-col items-center">
+                <p class="text-xl font-semibold text-gray-800 mb-3">Welcome, JohnDoe!</p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="/dashboard" class="button bg-green-600 hover:bg-green-700 focus:ring-green-500" id="dashboardButton">
+                        Go to Dashboard
+                    </a>
+                    <a href="/logout" class="button bg-red-600 hover:bg-red-700 focus:ring-red-500" id="logoutButton">
+                        Logout
+                    </a>
+                </div>
+            </div>
+            -->
+            <!-- Default state: User not authenticated -->
+            <a href="/login" class="button bg-blue-600 hover:bg-blue-700 focus:ring-blue-500" id="loginButton">
+                Login
+            </a>
+            <a href="/register" class="button bg-purple-600 hover:bg-purple-700 focus:ring-purple-500" id="registerButton">
+                Register
+            </a>
+        </div>
+
+        <!-- Information Section -->
+        <div class="info-section rounded-2xl p-6 md:p-8 border border-gray-100 shadow-inner mb-10">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">
+                About This App
+            </h2>
+            <p class="text-md md:text-lg text-gray-700 mb-4">
+                This application is designed to help you excel. Take interactive quizzes, track your progress, and master essential skills in
+                <span class="font-semibold text-blue-700">Python</span>,
+                <span class="font-semibold text-green-700">Java</span>,
+                <span class="font-semibold text-orange-700">HTML/CSS</span>, and
+                <span class="font-semibold text-red-700">C</span>.
+            </p>
+            <p class="text-md md:text-lg text-gray-700">
+                <span class="font-bold text-purple-700">Log in or register</span> today to unlock your full potential!
+            </p>
+        </div>
+
+        <!-- Simple Rule-Based Chatbot Section -->
+        <div class="chatbot-section bg-purple-50 rounded-2xl p-6 md:p-8 border border-purple-200 shadow-lg text-center">
+            <h2 class="text-3xl font-bold text-purple-800 mb-4">
+                🤖 Simple Q&A Chatbot 🤖
+            </h2>
+            <p class="text-md md:text-lg text-gray-700 mb-6">
+                Ask me about the quiz app's features or supported languages!
+            </p>
+
+            <div class="chatbot-container w-full max-w-md mx-auto">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="bot-message">Hello! Ask me about Python, Java, HTML/CSS, C, or the app's features.</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="Type your question..." onkeydown="if(event.key === 'Enter') document.getElementById('sendChatButton').click();">
+                    <button id="sendChatButton">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for basic button navigation
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get references to login and register buttons
+            const loginButton = document.getElementById('loginButton');
+            const registerButton = document.getElementById('registerButton');
+
+            // Add click listeners to trigger navigation
+            if (loginButton) {
+                loginButton.addEventListener('click', (event) => {
+                    console.log('Login button clicked! Navigating to /login');
+                    // The browser will handle navigation via the <a> tag's href attribute
+                });
+            }
+
+            if (registerButton) {
+                registerButton.addEventListener('click', (event) => {
+                    console.log('Register button clicked! Navigating to /register');
+                    // The browser will handle navigation via the <a> tag's href attribute
+                });
+            }
+
+            // --- Simple Rule-Based Chatbot Logic ---
+            const chatMessages = document.getElementById('chatMessages');
+            const chatInput = document.getElementById('chatInput');
+            const sendChatButton = document.getElementById('sendChatButton');
+
+            // Define chatbot rules (keywords and responses)
+            const chatbotRules = {
+                "hello": "Hi there! How can I help you today?",
+                "hi": "Hello! What would you like to know?",
+                "features": "This app allows you to take quizzes, track your progress, and improve skills in various programming languages.",
+                "what can this app do": "You can test your knowledge in Python, Java, HTML/CSS, and C, track your progress, and improve your skills.",
+                "languages": "We currently support quizzes in Python, Java, HTML/CSS, and C.",
+                "python": "Python is a popular high-level, interpreted programming language known for its simplicity and readability.",
+                "java": "Java is a class-based, object-oriented programming language designed to have as few implementation dependencies as possible.",
+                "html": "HTML (HyperText Markup Language) is the standard markup language for creating web pages.",
+                "css": "CSS (Cascading Style Sheets) is used for describing the presentation of a document written in HTML.",
+                "c": "C is a powerful, general-purpose programming language often used for system programming and embedded systems.",
+                "quiz": "This app offers quizzes in Python, Java, HTML/CSS, and C.",
+                "how to start": "To get started, you can log in if you have an account, or register if you are new!",
+                "register": "Click the 'Register' button above to create a new account!",
+                "login": "Click the 'Login' button above to sign in to your account!",
+                "thank you": "You're welcome! Feel free to ask if you have more questions.",
+                "thanks": "No problem! Happy to help.",
+                "help": "If you need further assistance, please email us at aicodemasteryhub@gmail.com!" // Changed key to lowercase "help"
+            };
+
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', `${sender}-message`);
+                messageDiv.textContent = text;
+                chatMessages.appendChild(messageDiv);
+                // Scroll to the bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            function getBotResponse(userMessage) {
+                const normalizedMessage = userMessage.toLowerCase().trim();
+                for (const keyword in chatbotRules) {
+                    // Check if the normalized user message includes the keyword
+                    if (normalizedMessage.includes(keyword)) {
+                        return chatbotRules[keyword];
+                    }
+                }
+                // Default fallback message if no keyword is matched
+                return "I'm a simple chatbot and can only answer questions about the app's features or supported languages. Please try rephrasing!";
+            }
+
+            sendChatButton.addEventListener('click', () => {
+                const userText = chatInput.value.trim();
+                if (userText === "") return;
+
+                addMessage(userText, 'user');
+                chatInput.value = '';
+
+                setTimeout(() => {
+                    const botResponse = getBotResponse(userText);
+                    addMessage(botResponse, 'bot');
+                }, 500); // Simulate a small delay for bot response
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Videos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background-color: #34495e !important;
+        }
+        .container {
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+        h1 {
+            color: #ecf0f1;
+            margin-bottom: 10px;
+        }
+        .lead {
+            color: #bdc3c7;
+            margin-bottom: 40px;
+        }
+        .video-card {
+            background-color: #3e526a;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%; /* Ensure cards in a row have equal height */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        .video-card .card-icon {
+            font-size: 2.5em;
+            color: #1abc9c; /* Turquoise */
+            margin-bottom: 15px;
+        }
+        .video-card h3 {
+            font-size: 1.5em;
+            color: #ecf0f1;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .video-card p {
+            color: #bdc3c7;
+            font-size: 0.95em;
+            flex-grow: 1; /* Allow description to take available space */
+            margin-bottom: 20px;
+        }
+        .video-card .btn-watch-now {
+            background-image: linear-gradient(to right, #8e44ad, #2980b9); /* Purple to Blue gradient */
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            width: 100%;
+            transition: background-image 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .video-card .btn-watch-now:hover {
+            background-image: linear-gradient(to right, #9b59b6, #3498db); /* Slightly lighter gradient on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        .btn-back-dashboard {
+            background-image: linear-gradient(to right, #8e44ad, #2980b9);
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            margin-top: 30px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .btn-back-dashboard:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            background-image: linear-gradient(to right, #9b59b6, #3498db);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('dashboard') }}">CodeMaster Quiz</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('videos') }}">Learning Videos</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="navbar-text me-3">
+                            Good Afternoon, {{ current_user.username }}!
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1 class="text-center">Learning Videos</h1>
+        <p class="lead text-center">Enhance your knowledge with these curated video tutorials.</p>
+
+        <div class="row">
+            <!-- Python Videos -->
+            <div class="col-6 col-md-6 col-lg-6 d-flex"> {# Changed column classes for 2x2 layout #}
+                <div class="video-card">
+                    <div class="card-icon"><i class="fab fa-python"></i></div>
+                    <h3>Python for Absolute Beginners</h3>
+                    <p>An introductory video to get started with Python programming concepts, perfect for new learners.</p>
+                    <a href="https://www.youtube.com/watch?v=hXN0JBWIya8" target="_blank" class="btn btn-watch-now">Watch Now</a>
+                </div>
+            </div>
+
+            <!-- Java Videos -->
+            <div class="col-6 col-md-6 col-lg-6 d-flex"> {# Changed column classes for 2x2 layout #}
+                <div class="video-card">
+                    <div class="card-icon"><i class="fab fa-java"></i></div>
+                    <h3>Complete Java Course with Projects</h3>
+                    <p>A full Java course that includes practical projects to solidify your learning and build real-world applications.</p>
+                    <a href="https://www.youtube.com/watch?v=prfwlnq2vJY" target="_blank" class="btn btn-watch-now">Watch Now</a>
+                </div>
+            </div>
+
+            <!-- HTML & CSS Videos -->
+            <div class="col-6 col-md-6 col-lg-6 d-flex"> {# Changed column classes for 2x2 layout #}
+                <div class="video-card">
+                    <div class="card-icon"><i class="fab fa-css3-alt"></i></div>
+                    <h3>Build a Responsive Website with HTML & CSS</h3>
+                    <p>A practical guide to creating responsive web designs using HTML and CSS, adapting to various screen sizes.</p>
+                    <a href="https://www.youtube.com/watch?v=dX8396ZmSPk" target="_blank" class="btn btn-watch-now">Watch Now</a>
+                </div>
+            </div>
+
+            <!-- C Language Videos -->
+            <div class="col-6 col-md-6 col-lg-6 d-flex"> {# Changed column classes for 2x2 layout #}
+                <div class="video-card">
+                    <div class="card-icon"><i class="fas fa-cogs"></i></div>
+                    <h3>C Language Full Course</h3>
+                    <p>A comprehensive full course for beginners to master C programming, covering fundamental concepts and advanced topics.</p>
+                    <a href="https://www.youtube.com/watch?v=pdPRdhify1Q" target="_blank" class="btn btn-watch-now">Watch Now</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-back-dashboard">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

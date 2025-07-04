@@ -1,0 +1,106 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+h1, h2 {
+    color: #0056b3;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.result-summary, .ai-suggestions, .wrong-answers-section, .actions {
+    margin-bottom: 25px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.result-summary p strong {
+    color: #28a745;
+}
+
+.ai-suggestions {
+    background-color: #e6f7ff;
+    border-color: #91d5ff;
+}
+
+.ai-suggestions ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.ai-suggestions li {
+    margin-bottom: 8px;
+}
+
+.wrong-answers-section {
+    background-color: #fff0f0;
+    border-color: #ffcccb;
+}
+
+.wrong-question {
+    border-bottom: 1px dashed #ccc;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.wrong-question:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.wrong-answer {
+    color: #dc3545; /* Red for wrong answers */
+    font-weight: bold;
+}
+
+.correct-answer {
+    color: #28a745; /* Green for correct answers */
+    font-weight: bold;
+}
+
+.topic-tag {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    margin-right: 5px;
+    margin-top: 5px;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+.actions {
+    text-align: center;
+    border: none;
+    padding: 0;
+}
