@@ -105,7 +105,7 @@ ADMIN_EMAIL=admin_email@mail.com
 ### 5️⃣ Run the Application
 
 ```bash
-flask --app app --debug run
+python app.py
 ```
 
 Visit `http://127.0.0.1:5000/` in your browser.
