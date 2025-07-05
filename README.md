@@ -38,7 +38,6 @@ Welcome to **AI CodeMastery Hub** – an interactive, AI-powered quiz platform d
 - **Frontend:** HTML, CSS, JavaScript, Bootstrap
 - **Backend:** Python, Flask
 - **Database:** SQLite
-- **Email Service:** Mailjet API
 - **AI Chatbot:** Custom logic-based Q&A system
 
 ---
@@ -89,17 +88,6 @@ source venv/bin/activate
 
 ```bash
 pip install -r requirements.txt
-```
-
-### 4️⃣ Configure Environment Variables
-
-Create a `.env` file in the root directory and add your Mailjet credentials:
-
-```env
-MAILJET_API_KEY=your_mailjet_api_key
-MAILJET_API_SECRET=your_mailjet_secret_key
-SENDER_EMAIL=your_verified_sender@mail.com
-ADMIN_EMAIL=admin_email@mail.com
 ```
 
 ### 5️⃣ Run the Application
